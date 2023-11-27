@@ -1,4 +1,4 @@
-package blank_identifier_alias_this_package
+package dot_alias_this_package
 
 type Stack[T comparable] struct {
 	stack []T
