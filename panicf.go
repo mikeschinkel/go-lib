@@ -4,6 +4,6 @@ import (
 	"fmt"
 )
 
-func panicf(msg string, args ...any) {
+func Panicf(msg string, args ...any) {
 	panic(fmt.Sprintf(msg, args...))
 }
