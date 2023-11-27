@@ -1,13 +1,15 @@
 package blank_identifier_alias_this_package
 
-type Stack[T comparable] []T
+type Stack[T comparable] struct {
+	stack []T
+}
 
 func (s *Stack[T]) Push(v T) {
-	*s = append(*s, v)
+	s.stack = append(s.stack, v)
 }
 
 func (s *Stack[T]) Has(v T) (has bool) {
-	for _, e := range *s {
+	for _, e := range s.stack {
 		if e == v {
 			return true
 		}
@@ -16,20 +18,18 @@ func (s *Stack[T]) Has(v T) (has bool) {
 }
 
 func (s *Stack[T]) Pop() T {
-	res := (*s)[len(*s)-1]
-	*s = (*s)[:len(*s)-1]
-	return res
+	return s.stack[len(s.stack)-1]
 }
 func (s *Stack[T]) Drop() {
-	*s = (*s)[:len(*s)-1]
+	s.stack = s.stack[:len(s.stack)-1]
 }
 func (s *Stack[T]) Empty() bool {
-	return len(*s) == 0
+	return len(s.stack) == 0
 }
 func (s *Stack[T]) Depth() int {
-	return len(*s)
+	return len(s.stack)
 }
 
 func (s *Stack[T]) Top() T {
-	return (*s)[len(*s)-1]
+	return s.stack[len(s.stack)-1]
 }
