@@ -1,4 +1,4 @@
-package dot_alias_this_package
+package lib
 
 func RightShift[S []E, E any](s S, e ...E) S {
 	s = append(s, e...)

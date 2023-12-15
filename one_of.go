@@ -1,4 +1,4 @@
-package dot_alias_this_package
+package lib
 
 func OneOf[T comparable](val T, options ...T) bool {
 	for _, option := range options {

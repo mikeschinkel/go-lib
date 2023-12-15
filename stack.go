@@ -1,4 +1,4 @@
-package dot_alias_this_package
+package lib
 
 type Stack[T comparable] struct {
 	stack []T
