@@ -11,4 +11,4 @@ const MinSubstrLen = 3
 //	Left String:    "this shows left content inline"
 //	Right String:   "this shows right content inline"
 //	Compare Output: "this shows (left/right) content inline"
-const LeftRightFormat = "(%s/%s)"
+const LeftRightFormat = "<(%s/%s)>"
