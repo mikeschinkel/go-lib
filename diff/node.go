@@ -10,17 +10,19 @@ type node struct {
 	left  []rune
 	both  []rune
 	right []rune
+	opts  *CompareOpts
 }
 
 func (n *node) InsertBoth(s string) {
 	n.both = append([]rune(s), n.both...)
 }
 
-func newFix() *node {
+func newNode(opts *CompareOpts) *node {
 	return &node{
 		left:  make([]rune, 0),
 		both:  make([]rune, 0),
 		right: make([]rune, 0),
+		opts:  opts,
 	}
 }
 
@@ -52,23 +54,24 @@ func (n *node) bitMap() (bits int8) {
 }
 
 func (n *node) String() (s string) {
+	format := n.opts.LeftRightFormat
 	switch n.bitMap() {
 	case 0b000:
 		s = ""
 	case 0b001:
-		s = fmt.Sprintf("(/%s)", string(n.right))
+		s = fmt.Sprintf(format, "", string(n.right))
 	case 0b010:
 		s = string(n.both)
 	case 0b011:
-		s = fmt.Sprintf("%s(/%s)", string(n.both), string(n.right))
+		s = fmt.Sprintf("%s"+format, string(n.both), "", string(n.right))
 	case 0b100:
-		s = fmt.Sprintf("(%s/)", string(n.left))
+		s = fmt.Sprintf(format, string(n.left), "")
 	case 0b101:
-		s = fmt.Sprintf("(%s/%s)", string(n.left), string(n.right))
+		s = fmt.Sprintf(format, string(n.left), string(n.right))
 	case 0b110:
-		s = fmt.Sprintf("(%s/)%s", string(n.left), string(n.both))
+		s = fmt.Sprintf(format+"%s", string(n.left), "", string(n.both))
 	case 0b111:
-		s = fmt.Sprintf("(%s/)%s(/%s)", string(n.left), string(n.both), string(n.right))
+		s = fmt.Sprintf(format+"%s"+format, string(n.left), "", string(n.both), "", string(n.right))
 	}
 	return s
 }

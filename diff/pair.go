@@ -8,21 +8,21 @@ import (
 
 type pair struct {
 	*tree
-	og1 string
-	og2 string
-	s1  string
-	s2  string
-	pad int
+	og1  string
+	og2  string
+	s1   string
+	s2   string
+	opts *CompareOpts
 }
 
-func newPair(s1, s2 string, pad int) *pair {
+func newPair(s1, s2 string, opts *CompareOpts) *pair {
 	return &pair{
 		og1:  s1,
 		s1:   s1,
 		og2:  s2,
 		s2:   s2,
-		pad:  pad,
-		tree: newTree(),
+		opts: opts,
+		tree: newTree(opts),
 	}
 }
 
@@ -41,13 +41,13 @@ end:
 
 // findPrefixes finds the initial suffixes. This could be handled by logic in
 // findInfixes, but then the logic for trimming the prefixes to pad length
-// becaomes much more complicated
+// becomes much more complicated
 func (p *pair) findPrefixes() *pair {
 
 	n1, n2 := 0, 0
 	s1 := p.s1
 	s2 := p.s2
-	prefix := newFix()
+	prefix := newNode(p.opts)
 	for {
 		if len(s1) == 0 {
 			goto end
@@ -76,9 +76,10 @@ end:
 	p.s1 = s1
 	p.s2 = s2
 
+	pad := p.opts.MatchingPadLen.Value
 	// Trim the prefix if longer than the pad amount.
-	if p.pad > 0 && len(prefix.both) > p.pad {
-		prefix.both = prefix.both[len(prefix.both)-p.pad:]
+	if pad > 0 && len(prefix.both) > pad {
+		prefix.both = prefix.both[len(prefix.both)-pad:]
 	}
 
 	p.prefix = prefix
@@ -87,12 +88,12 @@ end:
 
 // findSuffixes finds the initial suffixes. This could be handled by logic in
 // findInfixes, but then the logic for trimming the suffixes to pad length
-// becaomes much more complicated
+// becomes much more complicated
 func (p *pair) findSuffixes() *pair {
 	n1, n2 := 0, 0
 	s1 := p.s1
 	s2 := p.s2
-	suffix := newFix()
+	suffix := newNode(p.opts)
 	for {
 		if len(s1) == 0 {
 			goto end
@@ -121,9 +122,10 @@ end:
 	p.s1 = p.s1[:len(p.s1)-n1]
 	p.s2 = p.s2[:len(p.s2)-n2]
 
+	pad := p.opts.MatchingPadLen.Value
 	// Trim the prefix if longer than the pad amount.
-	if p.pad > 0 && len(suffix.both) > p.pad {
-		suffix.both = suffix.both[:p.pad]
+	if pad > 0 && len(suffix.both) > pad {
+		suffix.both = suffix.both[:pad]
 	}
 
 	p.suffix = suffix
@@ -131,11 +133,14 @@ end:
 }
 
 func (p *pair) findInfixes() *pair {
-	ft := findInfixes(p.s1, p.s2)
+	ft := p.opts.findInfixes(p.s1, p.s2)
 	p.infix = ft
 	return p
 }
 
+// handleEmptyString upfront handles empty strings on left, right or both. This
+// could be handled by logic in findInfixes, but then the logic for trimming the
+// suffixes to pad length becomes much more complicated.
 func (p *pair) handleEmptyString() (s string, ok bool) {
 	switch {
 	case len(p.s1) == 0 && len(p.s2) == 0:

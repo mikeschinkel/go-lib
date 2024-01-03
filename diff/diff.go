@@ -1,11 +1,7 @@
 package diff
 
-import (
-	"strings"
-)
-
-// longestCommonSubstring finds the longest common substring between two strings, properly handling Unicode.
-func longestCommonSubstring(s1, s2 string) (string, int) {
+// longestCommonSubstr finds the longest common substring between two strings, properly handling Unicode.
+func longestCommonSubstr(s1, s2 string) (string, int) {
 	var maxLength, endIndex int
 
 	runes1, runes2 := []rune(s1), []rune(s2)
@@ -41,29 +37,4 @@ func longestCommonSubstring(s1, s2 string) (string, int) {
 
 	// Return the longest common substring
 	return string(runes1[endIndex-maxLength : endIndex]), endIndex - maxLength
-}
-
-func findInfixes(s1, s2 string) (ifx fixer) {
-	var t *tree
-	var pos2 int
-
-	ft := newFix()
-	ss, pos1 := longestCommonSubstring(s1, s2)
-	if ss == "" {
-		ft.AddLeft(s1)
-		ft.AddRight(s2)
-		ifx = ft
-		goto end
-	}
-	//goland:noinspection GoAssignmentToReceiver
-	t = newTree()
-	pos2 = strings.Index(s2, ss)
-	t.prefix = findInfixes(s1[:pos1], s2[:pos2])
-	t.infix.(*node).AddBoth(ss)
-	if len(s1) > len(ss)+pos1 {
-		t.suffix = findInfixes(s1[len(ss)+pos1:], s2[len(ss)+pos2:])
-	}
-	ifx = t
-end:
-	return ifx
 }
