@@ -134,7 +134,25 @@ func TestCompareStrings(t *testing.T) {
 				pad:    diff.NewLen(25),
 				minlen: diff.NewLen(3),
 			},
-			want: "In publishing <(and/&)> graphic design, Lorem ipsum is a <(placeholder text /)>commonly used to demonstrate <(the/a document in its)> visual form<( of a document/,)> or a typeface <(without relying on/sans)> meaningful content. Lorem ipsum <(may be/is often)> used as a placeholder <(before/awaiting)> final copy<( is available/)>.",
+			want: "In publishing <(and/&)> graphic design, Lorem ipsum is a <(placeholder text /)>commonly used<(/ text placeholder)> to demonstrate <(the/a document in its)> visual form<( of a document/,)> or a typeface <(without relying on/sans)> meaningful content. Lorem ipsum <(may be/is often)> used as a placeholder <(before/awaiting)> final copy<( is available/)>.",
+		},
+		{
+			name: "Reordered substrings",
+			args: args{
+				s1:     "version tag already exists [project='golang'] [version_tag='go1.21.4']",
+				s2:     "version tag already exists [version_tag='go1.21.4'] [project='golang']",
+				minlen: diff.NewLen(3),
+			},
+			want: "version tag already exists [<(project='golang'] [/)>version_tag='go1.21.4<(/'] [project='golang)>']",
+		},
+		{
+			name: "Mixing word order",
+			args: args{
+				s1:     "Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document.",
+				s2:     "Lorem ipsum is a commonly used text placeholder to demonstrate a document in its visual form.",
+				minlen: diff.NewLen(3),
+			},
+			want: "Lorem ipsum is a <(placeholder text /)>commonly used<(/ text placeholder)> to demonstrate <(the/a document in its)> visual form<( of a document/)>.",
 		},
 	}
 	for _, tt := range tests {
