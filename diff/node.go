@@ -58,19 +58,11 @@ func (n *node) String() (s string) {
 	switch n.bitMap() {
 	case 0b000:
 		s = ""
-	case 0b001:
-		s = fmt.Sprintf(format, "", string(n.right))
 	case 0b010:
 		s = string(n.both)
-	case 0b011:
-		s = fmt.Sprintf("%s"+format, string(n.both), "", string(n.right))
-	case 0b100:
-		s = fmt.Sprintf(format, string(n.left), "")
-	case 0b101:
+	case 0b101, 0b100, 0b001:
 		s = fmt.Sprintf(format, string(n.left), string(n.right))
-	case 0b110:
-		s = fmt.Sprintf(format+"%s", string(n.left), "", string(n.both))
-	case 0b111:
+	case 0b111, 0b110, 0b011:
 		s = fmt.Sprintf(format+"%s"+format, string(n.left), "", string(n.both), "", string(n.right))
 	}
 	return s
