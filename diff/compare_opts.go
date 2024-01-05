@@ -20,21 +20,21 @@ func (opts *CompareOpts) findInfixes(s1, s2 string) (ifx fixer) {
 
 	ss, pos1 := longestCommonSubstr(s1, s2)
 	pos2 = strings.Index(s2, ss)
-	if !opts.hasCommonSubstr(ss) {
+	switch opts.hasCommonSubstr(ss) {
+	case true:
+		//goland:noinspection GoAssignmentToReceiver
+		t = newTree(opts)
+		t.prefix = opts.findInfixes(s1[:pos1], s2[:pos2])
+		t.infix.(*node).AddBoth(ss)
+		t.suffix = opts.findInfixes(s1[len(ss)+pos1:], s2[len(ss)+pos2:])
+		ifx = t
+	case false:
 		n := newNode(opts)
 		n.AddLeft(s1)
 		n.AddRight(s2)
 		ifx = n
 		goto end
 	}
-	//goland:noinspection GoAssignmentToReceiver
-	t = newTree(opts)
-	t.prefix = opts.findInfixes(s1[:pos1], s2[:pos2])
-	t.infix.(*node).AddBoth(ss)
-	if len(s1) > len(ss)+pos1 {
-		t.suffix = opts.findInfixes(s1[len(ss)+pos1:], s2[len(ss)+pos2:])
-	}
-	ifx = t
 end:
 	return ifx
 }
